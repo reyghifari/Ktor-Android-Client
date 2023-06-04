@@ -13,16 +13,16 @@ class GithubRepositoryImpl(
     private val httpClient: HttpClient
 ) : IGithubRepository {
 
-    override suspend fun getSearchUser(username: String): ApiResponse<List<UserResponse>> {
+    override suspend fun getSearchUser(username: String): Resource<List<UserResponse>> {
         return try {
-            ApiResponse.Success(
+            Resource.Success(
                 httpClient.get<SearchResponse> {
                     url(Constants.SEARCH_USER_URL.replace("{Query}", username))
                 }.items
             )
         } catch (e: Exception){
             e.printStackTrace()
-            ApiResponse.Error(e)
+            Resource.Error(e.message ?: "Error unexpected")
         }
     }
 
