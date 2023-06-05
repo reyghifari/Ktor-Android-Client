@@ -9,14 +9,15 @@ import com.bumptech.glide.Glide
 import com.hann.ktorclient.R
 import com.hann.ktorclient.data.network.response.UserResponse
 import com.hann.ktorclient.databinding.ItemLayoutUserBinding
+import com.hann.ktorclient.domain.model.User
 import java.util.ArrayList
 
 class UserAdapter : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
 
-    private var listData = ArrayList<UserResponse>()
-    var onItemClick: ((UserResponse) -> Unit)? = null
+    private var listData = ArrayList<User>()
+    var onItemClick: ((User) -> Unit)? = null
 
-    fun setData(newListData: List<UserResponse>?) {
+    fun setData(newListData: List<User>?) {
         if (newListData == null) return
         val diffResult = DiffUtil.calculateDiff(MyDiffUtil(listData, newListData))
         listData.clear()
@@ -41,10 +42,10 @@ class UserAdapter : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
 
         private val binding = ItemLayoutUserBinding.bind(itemView)
 
-        fun bind(data: UserResponse) {
+        fun bind(data: User) {
             with(binding){
                 Glide.with(itemView.context)
-                    .load(data.avatarUrl)
+                    .load(data.avatar_url)
                     .into(imageViewUserLayout)
                 tvUserLayout.text = data.login
             }
@@ -58,7 +59,7 @@ class UserAdapter : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
 
     }
 
-    class MyDiffUtil(private val oldList: List<UserResponse>, private val newList: List<UserResponse>): DiffUtil.Callback() {
+    class MyDiffUtil(private val oldList: List<User>, private val newList: List<User>): DiffUtil.Callback() {
         override fun getOldListSize() = oldList.size
         override fun getNewListSize() = newList.size
 

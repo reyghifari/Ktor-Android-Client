@@ -3,4 +3,5 @@
     <string name="something_wrong">Something wrong</string>
     <string name="user_image">User Image</string>
     <string name="name_detail">Name Detail</string>
+    <string name="search">Search User</string>
 </resources>

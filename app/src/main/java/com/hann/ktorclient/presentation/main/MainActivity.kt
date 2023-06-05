@@ -1,18 +1,25 @@
 package com.hann.ktorclient.presentation.main
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hann.ktorclient.R
 import com.hann.ktorclient.data.Resource
 import com.hann.ktorclient.databinding.ActivityMainBinding
 import com.hann.ktorclient.presentation.ui.UserAdapter
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),  SearchView.OnQueryTextListener  {
 
     private lateinit var binding:ActivityMainBinding
     private lateinit var userAdapter: UserAdapter
@@ -23,22 +30,34 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         initRecyclerView()
 
-        mainViewModel.user.observe(this){
-            when(it){
-                is Resource.Loading -> {
-
-                }
-                is Resource.Error -> {
-                    binding.rvUserMain.visibility = View.GONE
-                    binding.viewErrorMain.root.visibility = View.VISIBLE
-                }
-                is Resource.Success -> {
-                    binding.rvUserMain.visibility = View.VISIBLE
-                    userAdapter.setData(it.data)
-                }
+        mainViewModel.state.observe(this){user->
+            if (user.isLoading){
+                binding.loadingUser.visibility = View.VISIBLE
+            }
+            if (user.error.isNotBlank()){
+                binding.rvUserMain.visibility = View.GONE
+                binding.viewErrorMain.root.visibility = View.VISIBLE
+            }
+            if (user.users.isNotEmpty()){
+                binding.viewErrorMain.root.visibility = View.GONE
+                binding.loadingUser.visibility = View.GONE
+                binding.rvUserMain.visibility = View.VISIBLE
+                userAdapter.setData(user.users)
             }
         }
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.option_menu, menu)
+
+        val search = menu?.findItem(R.id.search)
+        val searchView = search?.actionView as? SearchView
+        searchView?.isSubmitButtonEnabled = true
+        searchView?.setOnQueryTextListener(this)
+        return true
+    }
+
+
 
     private fun initRecyclerView(){
         userAdapter = UserAdapter()
@@ -49,4 +68,22 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, it.login, Toast.LENGTH_SHORT).show()
         }
     }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        searchUser(query)
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        return true
+    }
+
+    private fun searchUser(query: String?){
+        if(query.isNullOrEmpty()) {
+            return
+        }
+        mainViewModel.getUsers(query)
+    }
+
+
 }

@@ -2,6 +2,7 @@ package com.hann.ktorclient.di
 
 import com.hann.ktorclient.data.GithubHttpClient
 import com.hann.ktorclient.data.GithubRepositoryImpl
+import com.hann.ktorclient.data.network.RemoteDataSource
 import com.hann.ktorclient.domain.repository.IGithubRepository
 import com.hann.ktorclient.domain.usecase.GitHubInteractor
 import com.hann.ktorclient.domain.usecase.GithubUserCase
@@ -14,6 +15,7 @@ val httpClientModule = module {
 }
 
 val repositoryModule = module {
+    single { RemoteDataSource(get()) }
     single<IGithubRepository> { GithubRepositoryImpl(get()) }
 }
 
