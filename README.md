@@ -13,7 +13,7 @@ KtorApp demonstrates modern Android development with Ktor, Koin, Coroutines, Flo
 
 Ktor is the first-class citizen of the Kotlin ecosystem, which means deep integration with the language itself and all its features, like coroutines, sealed classes, multiplatform distribution, extensibility, and so on.
 
-![architecture](readphoto/figurektor.jpg)
+![architecture](readphoto/ktor.png)
 
 Ktor design has been obviously inspired by other popular frameworks. For example, I've noticed a close resemblance to Laravel. So experienced backend developers won't be surprised too much when switching to Kotlin world. <br>
 
